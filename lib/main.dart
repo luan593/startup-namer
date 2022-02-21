@@ -21,15 +21,17 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('startup names'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.list),
+              tooltip: 'Saves suggestions',
+              onPressed: () {  },
+            ),
+          ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
-              RandomWords(),
-            ],
-          ),
+        body: const Center(
+          child: 
+            RandomWords(),
         ),
       ),
     );
@@ -45,9 +47,29 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
+  final _suggestions = <eng.WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18);
+
   @override
   Widget build(BuildContext context) {
-    final wordPair = eng.WordPair.random();
-    return Text(wordPair.asPascalCase);
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemBuilder: (context, i) {
+        if (i.isOdd) {
+          return const Divider();
+        }
+        else {
+          final index = i ~/ 2;
+          if (index >= _suggestions.length) {
+            _suggestions.addAll(eng.generateWordPairs().take(10));
+          }
+          return ListTile(
+            title: Text(
+              _suggestions[index].asPascalCase,
+              style: _biggerFont,),
+          );
+        }
+      }
+    );
   }
 }
